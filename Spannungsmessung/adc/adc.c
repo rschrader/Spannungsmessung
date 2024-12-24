@@ -22,7 +22,7 @@ void adc_init(void) {
 	ADC1.CTRLA = 0x01;
 }
 
-uint16_t adc_lese_synchron() {
+uint16_t adc_read_sync() {
 	// Starte eine ADC-Konvertierung
 	ADC1.COMMAND = 0x01;
 	
@@ -32,12 +32,12 @@ uint16_t adc_lese_synchron() {
 	return ADC1.RES;
 }
 
-void adc_trigger_asynchron() {
+void adc_trigger_async() {
 	// Starte eine ADC-Konvertierung
 	ADC1.COMMAND = 0x01;
 }
 
-int16_t adc_lese_asynchron(){
+int16_t adc_read_async(){
 	if (ADC1.INTFLAGS & 0x01)
 		return ADC1.RES;
 	else

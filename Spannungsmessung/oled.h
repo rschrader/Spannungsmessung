@@ -4,6 +4,7 @@
 #include <avr/pgmspace.h>
 #include <math.h>
 #include "Font5x8udzz.h"
+#include "i2c.h"
 
 void old_init()
 {
@@ -241,6 +242,17 @@ uint8_t old_char2(uint8_t x, uint8_t p, uint8_t zchn)
 	return(2 * w);
 }
 
+uint8_t old_string(uint8_t x, uint8_t p, uint8_t strng[])
+{
+	uint8_t i = 0;
+	while(strng[i] != 0)
+	{
+		x = x + 2 + old_char(x, p, strng[i]);
+		i++;
+	}
+	return(x);
+}
+
 uint8_t old_string2(uint8_t x, uint8_t p, uint8_t strng[])
 {
 	uint8_t i = 0;
@@ -273,6 +285,87 @@ uint8_t old_intdez2(uint8_t x, uint8_t p, int16_t n, uint8_t st)
 		n = n % s;
 		s = s / 10;
 	}	
+	return(x);
+}
+
+uint8_t old_intdez(uint8_t x, uint8_t p, int16_t n, uint8_t st)
+{
+	uint16_t d, s = 1;
+	if(n < 0)
+	{
+		n = -n;
+		x = x + 2 + old_char(x, p, '-');
+	}
+	else
+	{
+		x = x + 2 + old_char(x, p, ' ');
+	}
+	for(d = 1; d < st; d++)
+	s = 10 * s;
+	while(s > 0)
+	{
+		d = n / s;
+		x = x + 2 + old_char(x, p, d + 48);
+		n = n % s;
+		s = s / 10;
+	}
+	return(x);
+}
+
+uint8_t old_float(uint8_t x, uint8_t p, float n)
+{
+	uint8_t d, nz = 0, s = 100;
+	float nc;
+	if(n < 0)
+	{
+		x = x + 2 + old_char(x, p, '-');
+		n = -n;
+	}
+	else
+	{
+		x = x + 2 + old_char(x, p, ' ');
+	}
+	if(n < 999.9)
+	{
+		nc = n;
+		while(s > 0)
+		{
+			d = (uint8_t)floor(nc / s);
+			if((d == 0) && (nz == 0) && (s > 1))
+			{
+				x = x + 2 + old_char(x, p, ' ');
+			}
+			else
+			{
+				x = x + 2 + old_char(x, p, d + 48);
+				if(d > 0)
+				nz = 1;
+			}
+			nc = nc - d * s;
+			s = s / 10;
+		}
+		if(n < 100.0)
+		{
+			x = x + 2 + old_char(x, p, '.');
+			nc = 10.0 * nc;
+			d = (uint8_t)floor(nc);
+			x = x + 2 + old_char(x, p, d + 48);
+		}
+		else
+		{
+			x = x + 2 + old_char(x, p, ' ');
+			x = x + 2 + old_char(x, p, ' ');
+		}
+	}
+	else	//n >= 999.9 == ungültig
+	{
+		for(d = 0; d < 3; d++)
+		{
+			x = x + 2 + old_char(x, p, '-');
+		}
+		x = x + 2 + old_char(x, p, ' ');
+		x = x + 2 + old_char(x, p, ' ');
+	}
 	return(x);
 }
 

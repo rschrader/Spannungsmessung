@@ -3,12 +3,12 @@
 #ifndef I2CLIB
 #define I2CLIB
 
-#define i2c_ddrclr PORTC_DIRCLR
-#define i2c_ddrset PORTC_DIRSET
-#define i2c_outclr PORTC_OUTCLR
-#define i2c_in PORTC_IN
-#define SCLn 2
-#define SDAn 3
+#define i2c_ddrclr PORTB_DIRCLR
+#define i2c_ddrset PORTB_DIRSET
+#define i2c_outclr PORTB_OUTCLR
+#define i2c_in PORTB_IN
+#define SCLn 0
+#define SDAn 1
 #define SCL (1<<SCLn)
 #define SDA (1<<SDAn)
 #define SCL0 i2c_ddrset = SCL
